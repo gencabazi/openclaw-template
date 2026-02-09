@@ -1,96 +1,125 @@
-# OpenClaw Workflow Template
+# OpenClaw Template
 
-This repository is a reusable OpenClaw workflow that automates:
+A minimal, opinionated starter template for building **agent-orchestrated workflows** with OpenClaw.
 
-Plan → Review → Implement → Verify → Decide
-
-It is designed for backend tasks where you want deterministic,
-auditable AI output with verification and supervisor approval.
+This repository is intentionally small. It exists to give you a **clear mental model**, a **working baseline**, and a **repeatable structure** for OpenClaw-based projects — not to overwhelm you with abstractions or magic.
 
 ---
 
-## How to run
+## What is OpenClaw?
 
-From the project root:
+OpenClaw is a CLI-first, agent-orchestration system inspired by the UNIX philosophy:
 
-./run.sh --docker --stack node "Build a minimal Node API with GET /health (db check) and JSON 404."
+> small tools, clear contracts, composable workflows.
 
-Examples:
+Instead of a single “do everything” AI agent, OpenClaw encourages:
+- multiple specialized agents,
+- explicit responsibilities,
+- deterministic handoffs,
+- and human-readable artifacts.
 
-./run.sh --docker --stack node "Build a Node API with Postgres health check"
-./run.sh --stack go "Build a Go service with /health endpoint"
-./run.sh --dry-run --stack node "Plan an API for inventory management"
-
----
-
-## What this produces
-
-After a successful run, the following files are created or updated:
-
-- PLAN.md  
-- REVIEW.md  
-- IMPLEMENTATION.md  
-- VERIFY.md  
-- DECISION.md  
-
-The generated application is placed in:
-
-generated/app/
-
-Each run is snapshotted under:
-
-runs/<timestamp>/
+Think **workflow orchestration**, not chatbots.
 
 ---
 
-## Verification behavior (docker runs)
+## What is this repository?
 
-When delivery is set to `docker`, verification performs:
+This repository is a **public template** for starting new OpenClaw projects.
 
-1. docker compose up -d --build
-2. GET /health while DB is up
-   - expects HTTP 200
-   - expects status = ok
-3. docker compose stop db
-4. GET /health while DB is down
-   - expects HTTP 200
-   - expects status = degraded
-5. GET /nope
-   - expects JSON 404
-6. docker compose down -v
+It answers one question:
 
-Verification output is recorded in VERIFY.md.
+> “What is the *right* way to structure an OpenClaw project from day one?”
+
+If you clone this repo, you get:
+- a clean project skeleton,
+- predefined conventions,
+- and a safe place to experiment without breaking core assumptions.
 
 ---
 
-## Success criteria
+## What you get out of the box
 
-A run is considered successful when:
+- 🧠 **Clear agent roles**
+  - A supervisor-first mental model
+  - Explicit task delegation
+  - Deterministic stop / iterate decisions
 
-- REVIEW.md contains `VERDICT: APPROVE`
-- VERIFY.md ends with `result: pass`
-- DECISION.md contains `STATUS: COMPLETE`
+- 📁 **Predictable project structure**
+  - Separation between configuration, agents, runs, and outputs
+  - No hidden state
+  - No magic folders
 
----
+- 🧪 **Reproducible workflows**
+  - Each run produces inspectable artifacts
+  - Outputs are versionable
+  - Failures are debuggable
 
-## Notes
-
-- `generated/app/` is always recreated from scratch per run
-- `node_modules/` is never committed
-- Supervisor feedback is preserved across iterations
-- Maximum of 3 iterations per run
-
----
-
-## Requirements
-
-- OpenClaw CLI installed and authenticated
-- Docker + docker compose
-- curl
-- bash
+- 🧩 **Composable by design**
+  - Easy to extend with new agents
+  - Easy to integrate external tools later (CI, n8n, scripts, etc.)
 
 ---
 
-## License
+## What this template intentionally does *not* include
 
-Internal / experimental template.
+This is important.
+
+This repository does **not** include:
+- ❌ complex agent graphs
+- ❌ auto-scaling agent pools
+- ❌ plugins or extensions
+- ❌ UI dashboards
+- ❌ n8n or workflow automation glue
+- ❌ “AI does everything” abstractions
+
+Those belong **after** you understand the core flow.
+
+This template optimizes for **clarity over cleverness**.
+
+---
+
+## Core mental model
+
+OpenClaw workflows follow a **golden path**:
+
+1. **A task is defined**
+2. **The supervisor agent evaluates the task**
+3. **Planning or execution agents are invoked**
+4. **Artifacts are produced**
+5. **The supervisor decides**:
+   - stop (task complete), or
+   - iterate (refine / fix / retry)
+
+There is always:
+- one owner of decisions,
+- one source of truth,
+- and a visible output.
+
+No agent runs “just because”.
+
+---
+
+## Typical use cases
+
+This template works well for:
+- code generation pipelines
+- research & analysis workflows
+- document generation
+- CI-like validation flows
+- structured content creation
+- local-LLM experimentation with guardrails
+
+If your goal is **traceability and control**, you’re in the right place.
+
+---
+
+## Project structure (high level)
+
+```text
+.
+├── AGENTS.md          # Agent roles and responsibilities
+├── README.md          # You are here
+├── runs/              # Execution outputs (artifacts, logs, results)
+├── config/            # Project-specific configuration
+├── examples/          # Minimal, boring, predictable demos
+└── scripts/           # Helper scripts (optional)
