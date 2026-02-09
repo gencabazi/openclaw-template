@@ -1,0 +1,14 @@
+# runtime
+node_modules/
+runs/_logs/
+runs/*/
+
+# generated artifacts
+generated/app/node_modules/
+
+# secrets
+.env
+
+# editor
+.DS_Store
+
